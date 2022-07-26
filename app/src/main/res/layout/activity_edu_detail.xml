@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    tools:context=".lcyedu.activity.EduDetailActivity">
+
+    <RelativeLayout
+        android:id="@+id/rv_parent"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.xuexiang.xui.widget.progress.materialprogressbar.MaterialProgressBar
+                android:id="@+id/video_prepare_pb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/video_prepare_tv"
+                android:text="@string/video_prepare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+        <com.easefun.polyvsdk.video.PolyvVideoView
+            android:id="@+id/polyv_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.example.myapplication.lcyedu.player.PolyvPlayerMediaController
+            android:id="@+id/polyv_player_media_controller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_weight="1"
+        android:id="@+id/rv_course_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"/>
+
+
+
+
+
+</LinearLayout>

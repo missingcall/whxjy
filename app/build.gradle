@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdk 19
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        ndk {
+            //依赖的包可能支持很多类型的ABI
+            //为了避免打包了我们没有支持的ABI，指定需要打包的ABI目录
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'armeabi', 'x86_64', 'x86'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
+    dataBinding {
+        enabled true
+    }
+
+
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    // 弹性布局
+    implementation 'com.google.android:flexbox:0.3.1'
+    implementation 'org.apache.commons:commons-lang3:3.7'
+
+// 修改对应的sdk依赖，注意groupId已经变更，请整个依赖复制修改，请勿仅改动版本号
+    implementation 'net.polyv.android:polyvPlayer:2.16.5'//SDK核心包
+    implementation 'com.aliyun.ams:alicloud-android-utdid:1.5.2'
+
+    //XUI
+    implementation 'com.github.xuexiangjys:XUI:1.1.9'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.android.support:multidex:1.0.3'
+}
