@@ -24,7 +24,7 @@ import java.util.Date;
 *
 * */
 @Deprecated
-public class CourseLogSaveRequest {
+public class CourseLogSaveRequest extends BaseRequest{
 
    @SerializedName("beginGmtCreate")
    private String beginGmtCreate;

@@ -34,13 +34,7 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:text="V1.1.7"/>
-        <ImageView
-            android:layout_marginTop="35dp"
-            android:layout_marginRight="@dimen/common_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/firearrow"/>
+
         <ImageView
             android:id="@+id/iv_close"
             android:layout_gravity="right"

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
   "userNo": 0,
   "videoVid": "string"
 }*/
-public class CourseSignRequest {
+public class CourseSignRequest extends BaseRequest{
 
    @SerializedName("ip")
    private String ip;
@@ -50,5 +50,15 @@ public class CourseSignRequest {
 
    public void setVideoVid(String videoVid) {
       this.videoVid = videoVid;
+   }
+
+   @Override
+   public String toString() {
+      return "CourseSignRequest{" +
+              "ip='" + ip + '\'' +
+              ", periodId='" + periodId + '\'' +
+              ", userNo='" + userNo + '\'' +
+              ", videoVid='" + videoVid + '\'' +
+              '}';
    }
 }

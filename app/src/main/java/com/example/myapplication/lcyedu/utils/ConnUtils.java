@@ -1,5 +1,9 @@
 package com.example.myapplication.lcyedu.utils;
 
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.example.myapplication.EduAppcalition;
 import com.example.myapplication.lcyedu.bean.LoginDataToken;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,6 +20,7 @@ import okhttp3.RequestBody;
 public class ConnUtils {
 
 
+    private static final String TAG = Class.class.getSimpleName();
     private static Type MAP_TYPE = new TypeToken<Map<String, String>>() {
     }.getType();
 
@@ -84,25 +89,25 @@ public class ConnUtils {
      * @param hasHeader 是否需要header
      */
     public static void postJson(String url, Object param, Callback callback, boolean hasHeader) {
-            MediaType contentType = MediaType.parse("application/json; charset=utf-8");
-            // 1.拿到okhttpClient对象
-            OkHttpClient okHttpClient = new OkHttpClient();
-            //通过bean对象获得json
-            String paramJson = GSONUtils.GSON.toJson(param);
-            // 2.创建RequestBody
-            RequestBody requestBody = RequestBody.create(contentType, paramJson);
-            // 3.构造Request
-            Request.Builder builder = new Request.Builder();
-            if (hasHeader) {
-                addHeaders(builder);
-            }
-            Request request = builder.url(url)
-                    .post(requestBody)
-                    .build();
-            //4.创建一个Call对象
-            Call call = okHttpClient.newCall(request);
-            //5.异步请求enqueue(Callback)
-            call.enqueue(callback);
+        MediaType contentType = MediaType.parse("application/json; charset=utf-8");
+        // 1.拿到okhttpClient对象
+        OkHttpClient okHttpClient = new OkHttpClient();
+        //通过bean对象获得json
+        String paramJson = GSONUtils.GSON.toJson(param);
+        // 2.创建RequestBody
+        RequestBody requestBody = RequestBody.create(contentType, paramJson);
+        // 3.构造Request
+        Request.Builder builder = new Request.Builder();
+        if (hasHeader) {
+            addHeaders(builder);
+        }
+        Request request = builder.url(url)
+                .post(requestBody)
+                .build();
+        //4.创建一个Call对象
+        Call call = okHttpClient.newCall(request);
+        //5.异步请求enqueue(Callback)
+        call.enqueue(callback);
     }
 
     private static void addHeaders(Request.Builder builder) {
@@ -110,4 +115,15 @@ public class ConnUtils {
             builder.addHeader(header.getKey(), header.getValue());
         }
     }
+
+    public static String getWebUrl(String baseUrl) {
+        if (TextUtils.isEmpty(baseUrl)) return null;
+        StringBuilder url = new StringBuilder(baseUrl);
+        url.append("?appver=").append(Utils.getVersionCode(EduAppcalition.getInstance()) + "")
+                .append("&did=").append(Utils.getUniqueId(EduAppcalition.getInstance()));
+
+        Log.d(TAG, "getWebUrl: " + url);
+        return url.toString();
+    }
+
 }

@@ -204,6 +204,7 @@ public class PolyvPlayerMediaController extends PolyvBaseMediaController impleme
             // 单位：毫秒
             int position = getPosition();
             int totalTime = videoView.getDuration() / 1000 * 1000;
+//            Log.d(TAG, "totalTime: " + totalTime);
             int bufPercent = videoView.getBufferPercentage();
             //在拖动进度条的时候，这里不更新
             if (!status_dragging) {
@@ -392,11 +393,12 @@ public class PolyvPlayerMediaController extends PolyvBaseMediaController impleme
             videoVO = videoView.getVideo();
             videoWidth = videoView.getVideoWidth();
             videoHeight = videoView.getVideoHeight();
-            if (videoVO != null)
-                tv_title.setText(videoVO.getTitle());
+//            if (videoVO != null)
+//                tv_title.setText(videoVO.getTitle());
             int totalTime = videoView.getDuration();
-            tv_tottime.setText(PolyvTimeUtils.generateTime(totalTime));
+            tv_tottime.setText(PolyvTimeUtils.generateTime(totalTime));  //用的是竖屏的配置
             tv_tottime_land.setText(PolyvTimeUtils.generateTime(totalTime));
+
             //初始化播放器的银幕比率的显示控件
             initRatioView(videoView.getCurrentAspectRatio());
             //初始化倍速控件及其可见性
@@ -469,7 +471,6 @@ public class PolyvPlayerMediaController extends PolyvBaseMediaController impleme
 
     @Override
     public void hide() {
-        Log.d(TAG, "hide: ");
         if (isShowing) {
             handler.removeMessages(HIDE);
             handler.removeMessages(SHOW_PROGRESS);
@@ -488,6 +489,7 @@ public class PolyvPlayerMediaController extends PolyvBaseMediaController impleme
     public void setAnchorView(View view) {
         //...
     }
+
     // 关闭监听
     public void pause() {
         sensorHelper.disable();
@@ -521,29 +523,22 @@ public class PolyvPlayerMediaController extends PolyvBaseMediaController impleme
      */
     @Override
     public void show(int timeout) {
-        Log.d(TAG, "show: ");
         if (timeout < 0)
             status_showalways = true;
         else
             status_showalways = false;
-        if (isFullScreen ) {
-            Log.d(TAG, "show is FullScreen ");
+        //不论是否全屏都是一套逻辑
+
+        if (!isShowing) {
+            resetTopBottomLayout(View.VISIBLE);
+            //获取焦点
+            requestFocus();
+            handler.removeMessages(SHOW_PROGRESS);
+            handler.sendEmptyMessage(SHOW_PROGRESS);
+            isShowing = !isShowing;
             setVisibility(View.VISIBLE);
-            resetPopupLayout();
-//            resetTopBottomLayout(View.GONE);
-            isShowing = true;
-        } else {
-            if (!isShowing) {
-                resetTopBottomLayout(View.VISIBLE);
-                //获取焦点
-                requestFocus();
-                handler.removeMessages(SHOW_PROGRESS);
-                handler.sendEmptyMessage(SHOW_PROGRESS);
-                isShowing = !isShowing;
-                setVisibility(View.VISIBLE);
-            }
-            sensorHelper.toggle(isAutoSwitchOrientation(), PolyvScreenUtils.isLandscape(getContext()));
         }
+        sensorHelper.toggle(isAutoSwitchOrientation(), PolyvScreenUtils.isLandscape(getContext()));
 
 
         resetHideTime(timeout);
@@ -597,8 +592,8 @@ public class PolyvPlayerMediaController extends PolyvBaseMediaController impleme
         //获取当前窗口大小并保存
         mVideoSizeWidth = vlp.width;
         mVideoSizeHeight = vlp.height;
-        Log.d(TAG, "mVideoSizeWidth: " + mVideoSizeWidth);
-        Log.d(TAG, "mVideoSizeHeight: " + mVideoSizeHeight);
+//        Log.d(TAG, "mVideoSizeWidth: " + mVideoSizeWidth);
+//        Log.d(TAG, "mVideoSizeHeight: " + mVideoSizeHeight);
         vlp.width = ViewGroup.LayoutParams.MATCH_PARENT;
         vlp.height = ViewGroup.LayoutParams.MATCH_PARENT;
         rl_land.setVisibility(View.VISIBLE);

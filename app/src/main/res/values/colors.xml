@@ -59,4 +59,8 @@
     <color name="activity_color_translucence">#80000000</color>
     <color name="top_text_color_black_alpha">#00000000</color>
     <color name="top_layout_color_gray">#f9f9f9</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="text_black_common">#333333</color>
+    <color name="text_gray_common">#989898</color>
 </resources>

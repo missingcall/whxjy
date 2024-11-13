@@ -1,4 +1,4 @@
-package com.chongai.live.utils.download;
+package com.example.myapplication.lcyedu.utils;
 
 
 import android.app.Notification;
@@ -10,10 +10,15 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.widget.Toast;
+
 import androidx.core.app.NotificationCompat;
 
-import com.haigou.live.R;
-import com.chongai.live.utils.ToastUtil;
+
+import com.example.myapplication.EduAppcalition;
+import com.example.myapplication.R;
+import com.example.myapplication.lcyedu.activity.EduDetailActivity;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,9 +51,9 @@ public class DownFileHelper {
      * @param path apk下载地址
      */
     public void downFile(final String path) {
-        ToastUtil.showShort(mContext,"正在下载中...");
+        Toast.makeText(mContext, "正在下载中..." , Toast.LENGTH_SHORT).show();
         mNotifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        Bitmap btm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.system_touxiang);//可以换成你的app的logo
+        Bitmap btm = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.launcher_icon);//可以换成你的app的logo
         if (Build.VERSION.SDK_INT >= 26) {
 
             //创建 通知通道  channelid和channelname是必须的（自己命名就好）
@@ -62,10 +67,10 @@ public class DownFileHelper {
         }
             compatBuilder = new NotificationCompat.Builder(mContext, pushId)
                     //设置通知显示图标、文字等
-                    .setSmallIcon(R.drawable.system_touxiang)//可以换成你的app的logo
+                    .setSmallIcon(R.mipmap.launcher_icon)//可以换成你的app的logo
                     .setLargeIcon(btm)
                     .setTicker("正在下载")
-                    .setContentTitle(mContext.getResources().getString(R.string.app_content))
+                    .setContentTitle(mContext.getResources().getString(R.string.app_name))
                     .setContentText("正在下载")
                     .setSound(null)
                     .setAutoCancel(true)
@@ -90,6 +95,7 @@ public class DownFileHelper {
                 HttpURLConnection con = null;
                 InputStream is = null;
                 try {
+
                     URL url = new URL(path);
                     con = (HttpURLConnection) url.openConnection();
                     con.setReadTimeout(5000);
@@ -103,8 +109,20 @@ public class DownFileHelper {
                         FileOutputStream fileOutputStream = null;
                         if (is != null) {
                             //对apk进行保存
-                            File file = new File(Environment.getExternalStorageDirectory()
-                                    .getPath(), "haigou.apk");
+//                            File file = new File(Environment.getExternalStorageDirectory().getPath(), "whxjy.apk");
+//                            File file = new File(EduAppcalition.getInstance().getExternalFilesDir(null).getPath()+"whxjy");
+
+                            //创建文件路径
+                            File dir=new File(EduAppcalition.getInstance().getExternalFilesDir(null).getPath()+"myApk");
+                            if (!dir.exists()){
+                                dir.mkdir();
+                            }
+                            //创建文件
+                            File file = new File(dir+"/"+"whxjy.apk");
+                            if (!file.exists()){
+                                file.createNewFile();
+                            }
+
                             fileOutputStream = new FileOutputStream(file);
                             byte[] buf = new byte[1024];
                             int ch;

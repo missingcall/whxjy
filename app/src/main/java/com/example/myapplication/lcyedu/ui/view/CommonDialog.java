@@ -1,14 +1,13 @@
-package com.chongai.live.widget.dialog;
+package com.example.myapplication.lcyedu.ui.view;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
-import com.haigou.live.R;
+import com.example.myapplication.R;
 
 /**
  * Created by damon on 2018/4/17.
@@ -91,7 +90,7 @@ public class CommonDialog extends Dialog{
         window.getDecorView().setPadding(0, 0, 0, 0);
         LayoutParams lp = window.getAttributes();
         lp.width = LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = LayoutParams.MATCH_PARENT;
         lp.gravity = Gravity.CENTER;
         window.setAttributes(lp);
         window.setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -103,9 +102,9 @@ public class CommonDialog extends Dialog{
     public void setFullScreenWidth() {
         Window window = getWindow();
         window.getDecorView().setPadding(0, 0, 0, 0);
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = WindowManager.LayoutParams.FILL_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        LayoutParams lp = window.getAttributes();
+        lp.width = LayoutParams.FILL_PARENT;
+        lp.height = LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
     }
 
@@ -115,14 +114,14 @@ public class CommonDialog extends Dialog{
     public void setFullScreenHeight() {
         Window window = getWindow();
         window.getDecorView().setPadding(0, 0, 0, 0);
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.FILL_PARENT;
+        LayoutParams lp = window.getAttributes();
+        lp.width = LayoutParams.WRAP_CONTENT;
+        lp.height = LayoutParams.FILL_PARENT;
         window.setAttributes(lp);
     }
 
     public void setOnWhole() {
-        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        getWindow().setType(LayoutParams.TYPE_SYSTEM_ALERT);
     }
 
 }

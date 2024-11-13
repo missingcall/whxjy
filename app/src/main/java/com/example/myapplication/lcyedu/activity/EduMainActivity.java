@@ -115,6 +115,12 @@ public class EduMainActivity extends BaseActivity {
                     mAdapterItem.refresh(mListItem);
                 });
 
+            } else if (courseListResult.getCode() >= 301 && courseListResult.getCode() <= 399) {
+                Toast.makeText(EduMainActivity.this, "msg: " + courseListResult.getMsg(), Toast.LENGTH_LONG).show();
+                //退出登录状态
+                finish();
+                Intent intent = new Intent(EduMainActivity.this, EduLoginActivity.class);
+                startActivity(intent);
             }
         }
     };
@@ -186,7 +192,7 @@ public class EduMainActivity extends BaseActivity {
 
 //        initView();
         //请求课程列表
-        ConnUtils.post(Constants.BASE_ADDRESS + Constants.COURSE_CATEGORIES_ADDRESS, "", mCallbackFirst, true);
+        ConnUtils.post(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.COURSE_CATEGORIES_ADDRESS), "", mCallbackFirst, true);
 
     }
 
@@ -256,7 +262,8 @@ public class EduMainActivity extends BaseActivity {
             //班级目录  1.点哪个就通过id去请求这个班级对应的子列表  2.将请求到的子列表添加到mAdapterGrade  3.刷新二级界面及item界面
             String id = mListClass.get(position).getId();
             CourseListRequest courseListRequest = generateCourseBean(id, "", "");
-            ConnUtils.postJson(Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS, courseListRequest, mCallbackForClassList, true);
+
+            ConnUtils.postJson(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS), courseListRequest, mCallbackForClassList, true);
             setGradeList();
         });
 
@@ -269,8 +276,9 @@ public class EduMainActivity extends BaseActivity {
             CourseCategoriesResult.DataDTO.CourseCategoryListDTO.TwoListDTO twoListDTO = dto.getTwoList().get(position);
 
             CourseListRequest courseListRequest = generateCourseBean(dto.getId(), twoListDTO.getId(), "");
+
 //            Log.d(Constants.EDU_MAIN_ACTIVITY_LOG, Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS + courseListRequest.getCategoryId1() +courseListRequest.getCategoryId2());
-            ConnUtils.postJson(Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS, courseListRequest, mCallbackForGradeList, true);
+            ConnUtils.postJson(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS), courseListRequest, mCallbackForGradeList, true);
             setCourseList();
         });
 
@@ -283,8 +291,9 @@ public class EduMainActivity extends BaseActivity {
             CourseCategoriesResult.DataDTO.CourseCategoryListDTO.TwoListDTO.ThreeListDTO threeListDTO = twoListDTO.getThreeList().get(position);
 
             CourseListRequest courseListRequest = generateCourseBean(dto.getId(), twoListDTO.getId(), threeListDTO.getId());
+
 //            Log.d(Constants.EDU_MAIN_ACTIVITY_LOG, Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS + courseListRequest.getCategoryId1() +courseListRequest.getCategoryId2());
-            ConnUtils.postJson(Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS, courseListRequest, mCallbackForGradeList, true);
+            ConnUtils.postJson(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.COURSE_LIST_ADDRESS), courseListRequest, mCallbackForGradeList, true);
 
         });
 
@@ -293,11 +302,12 @@ public class EduMainActivity extends BaseActivity {
             mAdapterItem.select(position);
             //获得item对应的id
             String name = mListItem.get(position).getCourseName();
-            Log.d(Constants.EDU_MAIN_ACTIVITY_LOG, " name : " + name);
+//            Log.d(Constants.EDU_MAIN_ACTIVITY_LOG, " name : " + name);
             String id = mListItemID.get(position);
-            Log.d(Constants.EDU_MAIN_ACTIVITY_LOG, " id : " + id);
+//            Log.d(Constants.EDU_MAIN_ACTIVITY_LOG, " id : " + id);
             CourseViewRequest courseViewRequest = generateCourseViewBean(id);
-            ConnUtils.postJson(Constants.BASE_ADDRESS + Constants.COURSE_LIST_VIEW, courseViewRequest, mItemPostCallback, true);
+
+            ConnUtils.postJson(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.COURSE_LIST_VIEW), courseViewRequest, mItemPostCallback, true);
 
         });
     }

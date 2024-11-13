@@ -77,7 +77,7 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "bindData: " + position);
+//        Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "bindData: " + position);
         if (holder instanceof DetailChapterViewHolder) {
             String chapterName = ((CourseViewResult.DataDTO.ChapterListDTO) mDatas.get(position)).getChapterName();
             ((DetailChapterViewHolder) holder).title.setText(chapterName);

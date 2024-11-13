@@ -2,7 +2,7 @@ package com.example.myapplication.lcyedu.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginRequest {
+public class LoginRequest extends BaseRequest{
 
    @SerializedName("clientId")
    private String clientId;
@@ -12,6 +12,7 @@ public class LoginRequest {
    private String mobile;
    @SerializedName("password")
    private String password;
+
 
    @SerializedName("clientSource")
    private String clientSource;
@@ -55,4 +56,5 @@ public class LoginRequest {
    public void setPassword(String password) {
       this.password = password;
    }
+
 }

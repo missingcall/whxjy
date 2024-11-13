@@ -4,6 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.21666666666666667" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2475" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/layout/activity_edu_detail.xml" value="0.36614583333333334" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/layout/activity_edu_login.xml" value="0.36614583333333334" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/layout/dialog_version_update.xml" value="0.36614583333333334" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/layout/polyv_controller_media.xml" value="0.36614583333333334" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/layout/polyv_controller_media_land.xml" value="0.25" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/layout/polyv_controller_media_port.xml" value="0.36614583333333334" />
+        <entry key="..\:/asworkspace/whxjy/app/src/main/res/xml/file_paths.xml" value="0.18854166666666666" />
         <entry key="app/src/main/res/drawable-anydpi/bg_rect_round_tag_btn.xml" value="0.1705" />
         <entry key="app/src/main/res/drawable-v17/bg_rect_round_tag_btn.xml" value="0.1705" />
         <entry key="app/src/main/res/drawable-v17/thumb_checked.xml" value="0.1705" />

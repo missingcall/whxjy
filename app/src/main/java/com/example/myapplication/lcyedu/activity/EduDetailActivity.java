@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,21 +13,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.easefun.polyv.mediasdk.player.IjkMediaPlayer;
 import com.easefun.polyvsdk.ijk.PolyvPlayerScreenRatio;
 import com.easefun.polyvsdk.video.PolyvVideoView;
+import com.easefun.polyvsdk.video.listener.IPolyvOnPlayPauseListener;
 import com.easefun.polyvsdk.video.listener.IPolyvOnPreparedListener2;
 import com.example.myapplication.EduAppcalition;
 import com.example.myapplication.R;
 import com.example.myapplication.lcyedu.Constants;
 import com.example.myapplication.lcyedu.adapter.DetailCourseAdapter;
+import com.example.myapplication.lcyedu.bean.BaseRequest;
 import com.example.myapplication.lcyedu.bean.CourseLogSaveRequest;
 import com.example.myapplication.lcyedu.bean.CourseSignRequest;
 import com.example.myapplication.lcyedu.bean.CourseSignResult;
 import com.example.myapplication.lcyedu.bean.CourseViewResult;
+import com.example.myapplication.lcyedu.bean.DeviceCheckResult;
 import com.example.myapplication.lcyedu.bean.LoginResult;
 import com.example.myapplication.lcyedu.player.PolyvPlayerMediaController;
 import com.example.myapplication.lcyedu.utils.ConnUtils;
 import com.example.myapplication.lcyedu.utils.GSONUtils;
+import com.example.myapplication.lcyedu.utils.Utils;
 import com.xuexiang.xui.adapter.recyclerview.RecyclerViewHolder;
 import com.xuexiang.xui.widget.progress.materialprogressbar.MaterialProgressBar;
 
@@ -37,6 +43,7 @@ import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
@@ -47,6 +54,7 @@ import static com.easefun.polyvsdk.ijk.PolyvPlayerScreenRatio.AR_16_9_FIT_PARENT
 
 public class EduDetailActivity extends BaseActivity implements Callback {
 
+    private static final String TAG = EduDetailActivity.class.getSimpleName();
     @BindView(R.id.polyv_video_view)
     PolyvVideoView mPolyvVideoView;
     @BindView(R.id.rv_course_list)
@@ -73,6 +81,51 @@ public class EduDetailActivity extends BaseActivity implements Callback {
     private AlertDialog mAlertDialog;
     private String mVideoVid;
 
+
+    final Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            // TODO 在此处添加执行的代码
+            BaseRequest baseRequest = new BaseRequest();
+            ConnUtils.postJson(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.DEVICE_CHECK), baseRequest, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d(TAG, "onFailure: DEVICE_CHECK");
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String bodyString = response.body().string();
+                    Log.d(TAG, "device_check code bodyString :  " + bodyString);
+                    DeviceCheckResult deviceCheckResult = GSONUtils.GSON.fromJson(bodyString, DeviceCheckResult.class);
+                    Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "deviceCheckResult code :  " + deviceCheckResult.getCode() + " , msg : " + deviceCheckResult.getMsg());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (deviceCheckResult.getCode() == 200) {
+                                //成功不做操作
+                            } else if (deviceCheckResult.getCode() >= 301 && deviceCheckResult.getCode() <= 399) {
+                                Toast.makeText(EduDetailActivity.this, "msg: " + deviceCheckResult.getMsg(), Toast.LENGTH_LONG).show();
+                                //退出登录状态
+                                finish();
+                                Intent intent = new Intent(EduDetailActivity.this, EduLoginActivity.class);
+                                startActivity(intent);
+                            } else {
+/*                    Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "onResponse: "
+                            + courseSignRequest.getCode()
+                            + "   请求失败  弹出弹窗");*/
+                                showNormalDialog(deviceCheckResult.getMsg());
+                            }
+
+                        }
+                    });
+                }
+            }, true);
+            handler.postDelayed(this, 10000);// 50是延时时长
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +135,7 @@ public class EduDetailActivity extends BaseActivity implements Callback {
         initData();
         initView();
         initListeners();
+
     }
 
     private void initView() {
@@ -91,19 +145,46 @@ public class EduDetailActivity extends BaseActivity implements Callback {
         mAdapter.setSelectPosition(-1);
         mPolyvBaseMediaController = findViewById(R.id.polyv_player_media_controller);
         mPolyvBaseMediaController.initConfig(mRvParent);
+
+//        mPolyvVideoView.getIjkMediaPlayer().setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 1);
         mPolyvVideoView.setMediaController(mPolyvBaseMediaController);
         mPolyvVideoView.setAspectRatio(PolyvPlayerScreenRatio.AR_ASPECT_FILL_PARENT);
-        IPolyvOnPreparedListener2 iPolyvOnPreparedListener2 = new IPolyvOnPreparedListener2() {
+
+        mPolyvBaseMediaController.setAdapter(mAdapter);
+
+        mPolyvVideoView.setOnPreparedListener(new IPolyvOnPreparedListener2() {
             @Override
             public void onPrepared() {
+                mPolyvBaseMediaController.preparedView();
                 //视频准备完毕,进度条消失
                 mProgressBar.setVisibility(View.GONE);
                 mTextView.setVisibility(View.GONE);
+                mPolyvVideoView.getIjkMediaPlayer().setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 1);
             }
-        };
-        mPolyvVideoView.setOnPreparedListener(iPolyvOnPreparedListener2);
-        mPolyvBaseMediaController.setAdapter(mAdapter);
+        });
 
+        //视频播放、暂停、播放完成回调，主线程中回调
+        mPolyvVideoView.setOnPlayPauseListener(new IPolyvOnPlayPauseListener() {
+            @Override
+            public void onPause() {
+                Log.d(TAG, "onPause: ");
+                //停止发送校验
+                handler.removeCallbacks(runnable);// 关闭定时器处理
+            }
+
+            @Override
+            public void onPlay() {
+                Log.d(TAG, "onPlay: ");
+                //开始发送校验
+                handler.postDelayed(runnable, 10000);// 打开定时器，执行操作
+            }
+
+            @Override
+            public void onCompletion() {
+                Log.d(TAG, "onCompletion: ");
+                handler.removeCallbacks(runnable);// 关闭定时器处理
+            }
+        });
     }
 
     private void initData() {
@@ -147,7 +228,7 @@ public class EduDetailActivity extends BaseActivity implements Callback {
                 CourseViewResult.DataDTO.ChapterListDTO.PeriodListDTO periodListDTO = (CourseViewResult.DataDTO.ChapterListDTO.PeriodListDTO) mAllList.get(position);
                 mVideoVid = periodListDTO.getVideoVid();
                 String periodName = periodListDTO.getPeriodName();
-                Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, periodName + " vid : " + mVideoVid);
+//                Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, periodName + " vid : " + mVideoVid);
 
 
                 //调用接口记录观看记录
@@ -166,8 +247,9 @@ public class EduDetailActivity extends BaseActivity implements Callback {
         courseSignRequest.setUserNo(EduAppcalition.userNo);
         courseSignRequest.setVideoVid(period.getVideoVid());
 
-        Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "提交的sign: " + period.getId() + " , " + EduAppcalition.userNo + " , " + courseSignRequest.getVideoVid());
-        ConnUtils.postJson(Constants.BASE_ADDRESS + Constants.COURSE_SIGN, courseSignRequest, this, true);
+
+        Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "提交的sign: " + period.getId() + " , " + EduAppcalition.userNo + " , " + courseSignRequest.getVideoVid() + "\n" + courseSignRequest);
+        ConnUtils.postJson(ConnUtils.getWebUrl(Constants.BASE_ADDRESS + Constants.COURSE_SIGN), courseSignRequest, this, true);
     }
 
     @Override
@@ -186,22 +268,31 @@ public class EduDetailActivity extends BaseActivity implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         String bodyString = response.body().string();
-        CourseSignResult courseSignRequest = GSONUtils.GSON.fromJson(bodyString, CourseSignResult.class);
+        Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "courseSignResult code bodyString :  " + bodyString);
+        CourseSignResult courseSignResult = GSONUtils.GSON.fromJson(bodyString, CourseSignResult.class);
+        Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "courseSignResult code :  " + courseSignResult.getCode() + " , msg : " + courseSignResult.getMsg());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (courseSignRequest.getCode() == 200) {
-                    Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "onResponse: 200   请求成功  开始播放  " + courseSignRequest.getMsg());
+                if (courseSignResult.getCode() == 200) {
+//                    Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "onResponse: 200   请求成功  开始播放  " + courseSignResult.getMsg());
                     //根据点击的条目播放视频
                     mPolyvVideoView.pause();
                     mPolyvVideoView.setVid(mVideoVid);
                     mPolyvVideoView.start();
-//                    showNormalDialog(courseSignRequest.getMsg());
+//                    showNormalDialog(courseSignResult.getMsg());
+                } else if (courseSignResult.getCode() >= 301 && courseSignResult.getCode() <= 399) {
+                    Toast.makeText(EduDetailActivity.this, "msg: " + courseSignResult.getMsg(), Toast.LENGTH_LONG).show();
+                    //退出登录状态
+                    handler.removeCallbacks(runnable);// 关闭定时器处理
+                    finish();
+                    Intent intent = new Intent(EduDetailActivity.this, EduLoginActivity.class);
+                    startActivity(intent);
                 } else {
-                    Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "onResponse: "
-                            + courseSignRequest.getCode()
-                            + "   请求失败  弹出弹窗");
-                    showNormalDialog(courseSignRequest.getMsg());
+/*                    Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "onResponse: "
+                            + courseSignResult.getCode()
+                            + "   请求失败  弹出弹窗");*/
+                    showNormalDialog(courseSignResult.getMsg());
                 }
             }
         });

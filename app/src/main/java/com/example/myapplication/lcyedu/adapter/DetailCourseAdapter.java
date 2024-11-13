@@ -35,7 +35,7 @@ public class DetailCourseAdapter extends BaseRecyclerAdapter<Object> {
     @Override
     protected int getItemLayoutId(int viewType) {
         if(viewType == TYPE_CHAPTER){
-            Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "getItemLayoutId: " +TYPE_CHAPTER);
+//            Log.d(Constants.EDU_DETAIL_ACTIVITY_LOG, "getItemLayoutId: " +TYPE_CHAPTER);
             return R.layout.adapter_flexbox_layout_item_chapter;
         }else {
             return R.layout.adapter_flexbox_layout_item_period;

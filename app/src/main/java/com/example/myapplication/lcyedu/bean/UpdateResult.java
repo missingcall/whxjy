@@ -1,22 +1,13 @@
 package com.example.myapplication.lcyedu.bean;
 
-
-import com.example.myapplication.lcyedu.utils.GSONUtils;
-
 import java.io.Serializable;
 
-public class LoginResult implements Serializable {
+public class UpdateResult implements Serializable {
 
-   public <T> T getData(Class<T> clz) {
-      if (data == null) {
-         return null;
-      }
-      return GSONUtils.GSON.fromJson(data.toString(), clz);
-   }
 
    private int code;
    private String msg;
-   private Object data;
+   private DataDTO data;
 
    public int getCode() {
       return code;
@@ -34,20 +25,32 @@ public class LoginResult implements Serializable {
       this.msg = msg;
    }
 
-   public Object getData() {
+   public DataDTO getData() {
       return data;
    }
 
-   public void setData(Object data) {
+   public void setData(DataDTO data) {
       this.data = data;
    }
 
-   @Override
-   public String toString() {
-      return "LoginResult{" +
-              "code=" + code +
-              ", msg='" + msg + '\'' +
-              ", data=" + data +
-              '}';
+   public static class DataDTO {
+      private String appUrl;
+      private boolean forceUpdate;
+
+      public String getAppUrl() {
+         return appUrl;
+      }
+
+      public void setAppUrl(String appUrl) {
+         this.appUrl = appUrl;
+      }
+
+      public boolean isForceUpdate() {
+         return forceUpdate;
+      }
+
+      public void setForceUpdate(boolean forceUpdate) {
+         this.forceUpdate = forceUpdate;
+      }
    }
 }

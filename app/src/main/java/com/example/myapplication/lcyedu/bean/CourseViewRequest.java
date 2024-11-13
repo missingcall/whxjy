@@ -2,7 +2,7 @@ package com.example.myapplication.lcyedu.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CourseViewRequest {
+public class CourseViewRequest extends BaseRequest{
 
     @SerializedName("courseId")
     private String courseId;

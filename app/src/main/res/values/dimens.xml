@@ -134,4 +134,8 @@
     <dimen name="dp_159">159dp</dimen>
     <dimen name="dp_6">6dp</dimen>
 
+    <dimen name="margin_20">20dp</dimen>
+    <dimen name="common_margin">15dp</dimen>
+
+
 </resources>

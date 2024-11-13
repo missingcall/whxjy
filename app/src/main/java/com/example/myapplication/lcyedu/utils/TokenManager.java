@@ -37,6 +37,7 @@ public class TokenManager {
         if (StringUtils.isAnyBlank(headerName, headerValue)) {
             return;
         }
+        HEADERS.clear();
         HEADERS.put(headerName, headerValue);
     }
 
@@ -46,6 +47,16 @@ public class TokenManager {
      * @return
      */
     public static Map<String, String> getHeaders() {
+        System.out.println("===== HEADERS =======");
+        // 打印键集合
+        for (String key : HEADERS.keySet()) {
+            System.out.println(key);
+        }
+// 打印值集合
+        for (String value : HEADERS.values()) {
+            System.out.println(value);
+        }
+        System.out.println("===== HEADERS =======");
         //返回不可修改的MAP
         return Collections.unmodifiableMap(HEADERS);
     }

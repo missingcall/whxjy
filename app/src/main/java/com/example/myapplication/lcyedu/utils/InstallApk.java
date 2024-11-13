@@ -1,4 +1,4 @@
-package com.chongai.live.utils.download;
+package com.example.myapplication.lcyedu.utils;
 
 
 import android.app.Activity;
@@ -8,8 +8,7 @@ import android.os.Build;
 
 import androidx.core.content.FileProvider;
 
-
-import com.haigou.live.BuildConfig;
+import com.example.myapplication.BuildConfig;
 
 import java.io.File;
 
